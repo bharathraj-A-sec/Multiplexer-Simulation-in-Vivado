@@ -27,9 +27,10 @@ Under "Simulation", modify the Run Time (e.g., set to 1000ns).<br>
 
 Input/Output Signal Diagram:
 
-image
-RTL Code:4:1 MUX Gate-Level
+<img width="462" height="368" alt="image" src="https://github.com/user-attachments/assets/bab5a469-2ee4-4749-8cc1-6ee463469063" />
 
+RTL Code:4:1 MUX Gate-Level
+```
 module mux4to1(I0,I1,I2,I3,S1,S2,Y);
     input I0,I1,I2,I3,S1,S2;
     output Y;
@@ -42,20 +43,20 @@ module mux4to1(I0,I1,I2,I3,S1,S2,Y);
     and (d,I3,S1,S2);
     or (Y,a,b,c,d);    
 endmodule
+```
 4:1 MUX Data Flow:
-
-module mux4to1_df(A,B,C,D,S1,S0,Y);
+```module mux4to1_df(A,B,C,D,S1,S0,Y);
     input A,B,C,D,S1,S0;
     output Y;
     
     assign Y =   (S1 == 0 && S0 == 0) ? A:
                  (S1 == 0 && S0 == 1) ? B:
                  (S1 == 1 && S0 == 0) ? C: 
-                 (S1 == 1 && S0 == 1) ? D: 1'b0;
-                                         
+                 (S1 == 1 && S0 == 1) ? D: 1'b0;                               
 endmodule
+```
 4:1 MUX Behavioral:
-
+```
 module mux4to1_bhv(I,S,Y);
     input wire [0:3] I;
     input wire [1:0] S;
@@ -70,8 +71,9 @@ module mux4to1_bhv(I,S,Y);
         endcase
     end
 endmodule
+```
 4:1 MUX Structural:
-
+```
 module mux2to1(A,B,S,Y);
     input A,B,S;
     output Y;    
@@ -89,9 +91,10 @@ module mux4to1_str(I,S,Y);
     
     mux2to1 m3(.A(y1), .B(y1), .S(S[1]), .Y(Y));
     
-endmodule    
+endmodule  
+```
 TestBench:4:1 MUX Gate-Level Test bench:
-
+```
 
 module mux4to1_tb;
     reg I0_t,I1_t,I2_t,I3_t,S1_t,S2_t;
@@ -128,8 +131,9 @@ module mux4to1_tb;
         S2_t = 1'b1;
     end
 endmodule
+```
 4:1 MUX Data Flow Test bench:
-
+```
 module mux4to1_df_tb;
     reg a,b,c,d,s1,s0;
     wire y;
@@ -165,8 +169,9 @@ module mux4to1_df_tb;
         s0 = 1'b1;
     end
 endmodule
+```
 4:1 MUX Behavioral Test bench:
-
+```
 module mux4to1_bhv_tb;
     reg [0:3]I;
     reg [1:0]S;
@@ -187,8 +192,9 @@ module mux4to1_bhv_tb;
         S = 2'b11;
     end
 endmodule
+```
 4:1 MUX Structural Test bench :
-
+```
 module mux4to1_str_tb;
     reg [0:3]I;
     reg [1:0]S;
@@ -211,16 +217,38 @@ module mux4to1_str_tb;
         S = 2'b11;
      end
 endmodule
+```
 Output waveform: Output waveform: 4:1 MUX Gate-Level
 
-image 4:1 MUX Gate-Level image 4:1 MUX Behavioral image 4:1 MUX Structural image 4:1 MUX Gate-Level Test bench image
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/0a009bec-ad5b-47cc-af73-a2047797647f" />
+
+4:1 MUX Gate-Level
+
+<img width="1630" height="861" alt="image" src="https://github.com/user-attachments/assets/80170eeb-0ea8-44ed-a92c-2423dd18448e" />
+
+4:1 MUX Behavioral
+
+<img width="1625" height="856" alt="image" src="https://github.com/user-attachments/assets/5e9ff7b5-046f-4978-9a18-a9dd58ec8262" />
+
+4:1 MUX Structural
+
+<img width="1629" height="848" alt="image" src="https://github.com/user-attachments/assets/09b32595-1a3d-4f62-b95c-db5e6772bd8a" />
+
+4:1 MUX Gate-Level Test bench
+
+<img width="806" height="432" alt="image" src="https://github.com/user-attachments/assets/5c31cf38-c51a-4a41-b3a7-0fa540f10747" />
+
+
 4:1 MUX Data Flow Test bench
 
-image
+<img width="804" height="430" alt="image" src="https://github.com/user-attachments/assets/3dda333c-e323-4a0c-bc52-fc560cfafc9d" />
+
 4:1 MUX Behavioral Test bench
 
-image
+<img width="810" height="433" alt="image" src="https://github.com/user-attachments/assets/a5a67011-5f1a-4a16-8893-c0d1e863fb47" />
+
 4:1 MUX Structural Test bench
 
-image
+<img width="806" height="431" alt="image" src="https://github.com/user-attachments/assets/05b78a74-ce23-4914-98b3-30b6329713a9" />
+
 Conclusion: In this experiment, a 4:1 Multiplexer was successfully designed and simulated using Verilog HDL across four different modeling styles: Gate-Level, Data Flow, Behavioral, and Structural. The simulation results verified the correct functionality of the MUX, with all implementations producing identical outputs for the given input conditions.
