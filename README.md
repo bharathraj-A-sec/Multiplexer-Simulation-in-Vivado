@@ -27,23 +27,200 @@ Under "Simulation", modify the Run Time (e.g., set to 1000ns).<br>
 
 Input/Output Signal Diagram:
 
+image
+RTL Code:4:1 MUX Gate-Level
 
-RTL Code:
+module mux4to1(I0,I1,I2,I3,S1,S2,Y);
+    input I0,I1,I2,I3,S1,S2;
+    output Y;
+    wire p,q,a,b,c,d;
+    not (p,S1);
+    not (q,S2);
+    and (a,I0,p,q);
+    and (b,I1,p,S2);
+    and (c,I2,S1,q);
+    and (d,I3,S1,S2);
+    or (Y,a,b,c,d);    
+endmodule
+4:1 MUX Data Flow:
+
+module mux4to1_df(A,B,C,D,S1,S0,Y);
+    input A,B,C,D,S1,S0;
+    output Y;
+    
+    assign Y =   (S1 == 0 && S0 == 0) ? A:
+                 (S1 == 0 && S0 == 1) ? B:
+                 (S1 == 1 && S0 == 0) ? C: 
+                 (S1 == 1 && S0 == 1) ? D: 1'b0;
+                                         
+endmodule
+4:1 MUX Behavioral:
+
+module mux4to1_bhv(I,S,Y);
+    input wire [0:3] I;
+    input wire [1:0] S;
+    output reg Y;
+    always @(*) begin
+        case (S)
+            2'b00: Y = I[0];
+            2'b01: Y = I[1];
+            2'b10: Y = I[2];
+            2'b11: Y = I[3];
+            default: Y = 1'b0;
+        endcase
+    end
+endmodule
+4:1 MUX Structural:
+
+module mux2to1(A,B,S,Y);
+    input A,B,S;
+    output Y;    
+    assign Y = (S) ? B : A;
+endmodule
+
+module mux4to1_str(I,S,Y);
+    input [0:3]I;
+    input [1:0]S;
+    output Y;
+    wire y1,y2;
+    
+    mux2to1 m1(.A(I[0]), .B(I[1]), .S(S[0]), .Y(y1));
+    mux2to1 m2(.A(I[2]), .B(I[4]), .S(S[0]), .Y(y2));
+    
+    mux2to1 m3(.A(y1), .B(y1), .S(S[1]), .Y(Y));
+    
+endmodule    
+TestBench:4:1 MUX Gate-Level Test bench:
 
 
-TestBench:
+module mux4to1_tb;
+    reg I0_t,I1_t,I2_t,I3_t,S1_t,S2_t;
+    wire Y_t;
+    mux4to1 dut(.I0(I0_t),.I1(I1_t),.I2(I2_t),.I3(I3_t),.S1(S1_t),.S2(S2_t),.Y(Y_t));
+    initial 
+    begin
+        I0_t = 1'b1;
+        I1_t = 1'b0;
+        I2_t = 1'b1;
+        I3_t = 1'b0;
+        S1_t = 1'b0;
+        S2_t = 1'b0;
+        #100
+        I0_t = 1'b1;
+        I1_t = 1'b0;
+        I2_t = 1'b1;
+        I3_t = 1'b0;
+        S1_t = 1'b0;
+        S2_t = 1'b1;
+        #100
+        I0_t = 1'b1;
+        I1_t = 1'b0;
+        I2_t = 1'b1;
+        I3_t = 1'b0;
+        S1_t = 1'b1;
+        S2_t = 1'b0;
+        #100
+        I0_t = 1'b1;
+        I1_t = 1'b0;
+        I2_t = 1'b1;
+        I3_t = 1'b0;
+        S1_t = 1'b1;
+        S2_t = 1'b1;
+    end
+endmodule
+4:1 MUX Data Flow Test bench:
 
+module mux4to1_df_tb;
+    reg a,b,c,d,s1,s0;
+    wire y;
+    mux4to1_df dut(.A(a),.B(b),.C(c),.D(d),.S1(s1),.S0(s0),.Y(y));
+    initial 
+    begin
+        a = 1'b1;
+        b = 1'b0;
+        c = 1'b1;
+        d = 1'b0;
+        s1 = 1'b0;
+        s0 = 1'b0;
+        #100
+        a = 1'b1;
+        b = 1'b0;
+        c = 1'b1;
+        d = 1'b0;
+        s1 = 1'b0;
+        s0 = 1'b1;
+        #100
+        a = 1'b1;
+        b = 1'b0;
+        c = 1'b1;
+        d = 1'b0;
+        s1 = 1'b1;
+        s0 = 1'b0;
+        #100
+        a = 1'b1;
+        b = 1'b0;
+        c = 1'b1;
+        d = 1'b0;
+        s1 = 1'b1;
+        s0 = 1'b1;
+    end
+endmodule
+4:1 MUX Behavioral Test bench:
 
+module mux4to1_bhv_tb;
+    reg [0:3]I;
+    reg [1:0]S;
+    wire Y;
+    mux4to1_bhv dut(.I(I),.S(S),.Y(Y));
+    initial 
+    begin
+        I = 4'b1010;
+        S = 2'b00;
+        #100
+        I = 4'b1010;
+        S = 2'b01;
+        #100
+        I = 4'b1010;
+        S = 2'b10;
+        #100
+        I = 4'b1010;
+        S = 2'b11;
+    end
+endmodule
+4:1 MUX Structural Test bench :
 
-Output waveform:
+module mux4to1_str_tb;
+    reg [0:3]I;
+    reg [1:0]S;
+    wire Y;
+    
+    mux4to1_str dut(.I(I), .S(S), .Y(Y));
+    
+    initial
+    begin
+        I = 4'b1010;
+        S = 2'b00;
+        #100
+        I = 4'b1010;
+        S = 2'b01;
+        #100
+        I = 4'b1010;
+        S = 2'b10;
+        #100 
+        I = 4'b1010;
+        S = 2'b11;
+     end
+endmodule
+Output waveform: Output waveform: 4:1 MUX Gate-Level
 
+image 4:1 MUX Gate-Level image 4:1 MUX Behavioral image 4:1 MUX Structural image 4:1 MUX Gate-Level Test bench image
+4:1 MUX Data Flow Test bench
 
+image
+4:1 MUX Behavioral Test bench
 
-Conclusion:
+image
+4:1 MUX Structural Test bench
 
-
-
-
-
-
-  
+image
+Conclusion: In this experiment, a 4:1 Multiplexer was successfully designed and simulated using Verilog HDL across four different modeling styles: Gate-Level, Data Flow, Behavioral, and Structural. The simulation results verified the correct functionality of the MUX, with all implementations producing identical outputs for the given input conditions.
